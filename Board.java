@@ -27,28 +27,45 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 	}
 
 	public void iteration() {
-		for (int y = 0; y < lanes; ++y)
+		for (int y = 0; y < lanes; ++y) {
 			if (!periodic && Math.random() < spawn)
 				points[0][y].empty = false;
 
+			if (!periodic && Math.random() < spawn)
+				points[points.length - 1][lanes + 1 + y].empty = false;
+		}
+
 		for (int y = 0; y < lanes; ++y)
-			for (int x = 0; x < points.length; ++x)
+			for (int x = 0; x < points.length; ++x) {
 				points[x][y].changeLanes();
+				points[points.length - 1 - x][y + lanes + 1].changeLanes();
+			}
 
 		for (int y = 0; y < lanes; ++y)
-			for (int x = 0; x < points.length; ++x)
+			for (int x = 0; x < points.length; ++x) {
 				points[x][y].updateVelocity();
+				points[points.length - 1 - x][y + lanes + 1].updateVelocity();
+			}
 
 		for (int y = 0; y < lanes; ++y)
-			for (int x = 0; x < points.length - 1; ++x)
+			for (int x = 0; x < points.length - 1; ++x) {
 				if (!points[x][y].empty)
 					points[x][y].move();
+
+				if (!points[points.length - 1 - x][y + lanes + 1].empty)
+					points[points.length - 1 - x][y + lanes + 1].move();
+			}
 
 		for (int y = 0; y < lanes; ++y) {
 			if (!periodic && Math.random() < disappear)
 				points[points.length - 1][y].clear();
 			else if (!points[points.length - 1][y].empty)
 				points[points.length - 1][y].move();
+
+			if (!periodic && Math.random() < disappear)
+				points[0][y + lanes + 1].clear();
+			else if (!points[points.length - 1][y + lanes + 1].empty)
+				points[0][y + lanes + 1].move();
 		}
 
 		this.repaint();
@@ -73,11 +90,20 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 			for (int y = 0; y < lanes; ++y) {
 				points[x][y].next = points[(x + 1) % points.length][y];
 				points[x][y].prev = points[(x + points.length - 1) % points.length][y];
-				if (y > 0)
-					points[x][y].up = points[x][y - 1];
 
-				if (y < lanes - 1)
-					points[x][y].down = points[x][y + 1];
+				points[x][y + lanes + 1].prev = points[(x + 1) % points.length][y + lanes + 1];
+				points[x][y + lanes + 1].next = points[(x + points.length - 1) % points.length][y + lanes + 1];
+
+				if (y > 0) {
+					points[x][y].down = points[x][y - 1];
+					points[x][y + lanes + 1].up = points[x][y + lanes];
+				}
+
+				if (y < lanes - 1) {
+					points[x][y].up = points[x][y + 1];
+					points[x][y + lanes + 1].down = points[x][y + lanes + 2];
+				}
+
 			}
 	}
 
