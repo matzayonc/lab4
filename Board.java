@@ -14,8 +14,8 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 	private int size = 10;
 	public int editType = 0;
 	public static boolean periodic = false;
-	public static float spawn = 0.5f;
-	public static float disappear = 0.3f;
+	public static float spawn = 0.3f;
+	public static float disappear = 0.4f;
 	public static int lanes = 2;
 
 	public Board(int length, int height) {
@@ -30,6 +30,10 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 		for (int y = 0; y < lanes; ++y)
 			if (!periodic && Math.random() < spawn)
 				points[0][y].empty = false;
+
+		for (int y = 0; y < lanes; ++y)
+			for (int x = 0; x < points.length; ++x)
+				points[x][y].changeLanes();
 
 		for (int y = 0; y < lanes; ++y)
 			for (int x = 0; x < points.length; ++x)
@@ -68,9 +72,12 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 		for (int x = 0; x < points.length; ++x)
 			for (int y = 0; y < lanes; ++y) {
 				points[x][y].next = points[(x + 1) % points.length][y];
-				points[x][y].prev = points[(x - 1) % points.length][y];
+				points[x][y].prev = points[(x + points.length - 1) % points.length][y];
 				if (lanes == 2)
 					points[x][y].side = points[x][(y + 1) % 2];
+
+				if (y > 0)
+					points[x][y].up = points[x][y - 1];
 			}
 	}
 
@@ -115,8 +122,13 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 				// float a = 0.5f + change;
 				if (points[x][y].empty)
 					g.setColor(new Color(1f, 1f, 1f));
-				else
-					g.setColor(new Color(0, 0, 0));
+				else {
+					float red = 0.3f * (float) points[x][y].lastSwitch();
+					if (red > 1f)
+						red = 1f;
+
+					g.setColor(new Color(1 - red, 0, 0));
+				}
 
 				// }
 				/*
