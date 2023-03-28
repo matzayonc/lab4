@@ -65,4 +65,14 @@ public class Point {
 		return next.emptyInFront(emptyBehind + 1);
 	}
 
+	public int emptyBehind(int emptyBehind) {
+		if (!empty)
+			return emptyBehind;
+
+		if (prev == null || emptyBehind + 1 >= maxSpeed)
+			return maxSpeed;
+
+		return prev.emptyBehind(emptyBehind + 1);
+	}
+
 }

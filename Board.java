@@ -65,10 +65,13 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 			for (int y = 0; y < points[x].length; ++y)
 				points[x][y] = new Point();
 
-		for (int x = 0; x < points.length; ++x) {
-			for (int y = 0; y < points[x].length; ++y)
+		for (int x = 0; x < points.length; ++x)
+			for (int y = 0; y < lanes; ++y) {
 				points[x][y].next = points[(x + 1) % points.length][y];
-		}
+				points[x][y].prev = points[(x - 1) % points.length][y];
+				if (lanes == 2)
+					points[x][y].side = points[x][(y + 1) % 2];
+			}
 	}
 
 	protected void paintComponent(Graphics g) {
