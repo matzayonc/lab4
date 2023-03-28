@@ -2,8 +2,8 @@ public class Point {
 	/// Predefined
 	public Point next;
 	public Point prev;
-	public Point side;
 	public Point up;
+	public Point down;
 
 	/// Changing
 	public int vel;
@@ -71,21 +71,32 @@ public class Point {
 		clear();
 	}
 
-	public boolean shouldChange() {
-		if (side == null || !side.empty)
-			return false;
-
+	public int shouldChange() {
 		int gap = next.emptyInFront(0);
-		int gapO = side.emptyInFront(-1);
-		int gapBack = side.emptyBehind(-1);
 
-		if ((gap < l || up == null) && gapO > lO && gapBack > lB) {
-			System.out.println("Gap: " + gap + " GapO: " + gapO + " GapBack: " + gapBack);
-			if (Math.random() < pChange)
-				return true;
+		if (up != null && up.empty) {
+			int gapO = up.emptyInFront(-1);
+			int gapBack = up.emptyBehind(-1);
+
+			if (gap < l && gapO > lO && gapBack > lB) {
+				System.out.println("Gap: " + gap + " GapO: " + gapO + " GapBack: " + gapBack);
+				if (Math.random() < pChange)
+					return -1;
+			}
 		}
 
-		return false;
+		if (down != null && down.empty) {
+			int gapO = down.emptyInFront(-1);
+			int gapBack = down.emptyBehind(-1);
+
+			if (gapO > lO && gapBack > lB) {
+				System.out.println("Gap: " + gap + " GapO: " + gapO + " GapBack: " + gapBack);
+				if (Math.random() < pChange)
+					return 1;
+			}
+		}
+
+		return 0;
 	}
 
 	public void changeLanes() {
@@ -94,14 +105,23 @@ public class Point {
 
 		lastSwitch++;
 
-		if (!shouldChange())
+		int changing = shouldChange();
+
+		if (changing == 0)
 			return;
 
 		System.out.println("Changing");
 
-		side.empty = false;
-		side.vel = vel;
-		side.velLeft = velLeft;
+		if (changing == -1) {
+			up.empty = false;
+			up.vel = vel;
+			up.velLeft = velLeft;
+		} else {
+			down.empty = false;
+			down.vel = vel;
+			down.velLeft = velLeft;
+
+		}
 
 		clear();
 	}

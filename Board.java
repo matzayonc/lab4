@@ -14,9 +14,9 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 	private int size = 10;
 	public int editType = 0;
 	public static boolean periodic = false;
-	public static float spawn = 0.3f;
+	public static float spawn = 0.2f;
 	public static float disappear = 0.4f;
-	public static int lanes = 2;
+	public static int lanes = 3;
 
 	public Board(int length, int height) {
 		addMouseListener(this);
@@ -73,11 +73,11 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 			for (int y = 0; y < lanes; ++y) {
 				points[x][y].next = points[(x + 1) % points.length][y];
 				points[x][y].prev = points[(x + points.length - 1) % points.length][y];
-				if (lanes == 2)
-					points[x][y].side = points[x][(y + 1) % 2];
-
 				if (y > 0)
 					points[x][y].up = points[x][y - 1];
+
+				if (y < lanes - 1)
+					points[x][y].down = points[x][y + 1];
 			}
 	}
 
