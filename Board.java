@@ -13,9 +13,13 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 	private Point[][] points;
 	private int size = 10;
 	public int editType = 0;
+
+	public int iterations = 0;
+	public int cars = 0;
+
 	public static boolean periodic = false;
-	public static float spawn = 0.2f;
-	public static float disappear = 0.4f;
+	public static float spawn = 0.3f;
+	public static float disappear = 1f;
 	public static int lanes = 3;
 
 	public Board(int length, int height) {
@@ -57,16 +61,28 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 			}
 
 		for (int y = 0; y < lanes; ++y) {
-			if (!periodic && Math.random() < disappear)
-				points[points.length - 1][y].clear();
-			else if (!points[points.length - 1][y].empty)
+			if (!periodic && Math.random() < disappear) {
+				if (!points[points.length - 1][y].empty) {
+					cars++;
+					points[points.length - 1][y].clear();
+				}
+			} else if (!points[points.length - 1][y].empty)
 				points[points.length - 1][y].move();
 
-			if (!periodic && Math.random() < disappear)
-				points[0][y + lanes + 1].clear();
-			else if (!points[points.length - 1][y + lanes + 1].empty)
+			if (!periodic && Math.random() < disappear) {
+				if (!points[0][y + lanes + 1].empty) {
+					cars++;
+					points[0][y + lanes + 1].clear();
+				}
+			} else if (!points[points.length - 1][y + lanes + 1].empty)
 				points[0][y + lanes + 1].move();
 		}
+
+		if (cars > 0)
+			iterations++;
+
+		float average = (float) cars / iterations;
+		System.out.println("Iterations: " + iterations + " Cars: " + cars + " Average: " + average);
 
 		this.repaint();
 	}

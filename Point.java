@@ -79,7 +79,6 @@ public class Point {
 			int gapBack = up.emptyBehind(-1);
 
 			if (gap < l && gapO > lO && gapBack > lB) {
-				System.out.println("Gap: " + gap + " GapO: " + gapO + " GapBack: " + gapBack);
 				if (Math.random() < pChange)
 					return -1;
 			}
@@ -90,7 +89,6 @@ public class Point {
 			int gapBack = down.emptyBehind(-1);
 
 			if (gapO > lO && gapBack > lB) {
-				System.out.println("Gap: " + gap + " GapO: " + gapO + " GapBack: " + gapBack);
 				if (Math.random() < pChange)
 					return 1;
 			}
@@ -109,8 +107,6 @@ public class Point {
 
 		if (changing == 0)
 			return;
-
-		System.out.println("Changing");
 
 		if (changing == -1) {
 			up.empty = false;
